@@ -9,7 +9,7 @@ const client = new ApolloClient({
   credentials: 'include',
 });
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: any) {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>

@@ -4,34 +4,23 @@ import { FormControl, FormLabel, Input, FormErrorMessage, Box, Button } from '@c
 import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/FormField';
 import { useMutation, gql } from '@apollo/client';
+import { useRegisterMutation } from '../generated/graphql';
 
 interface registerProps {}
 
-const REGISTER_MUTATION = gql`
-  mutation Register($username: String!, $email: String!, $password: String!) {
-    register(options: { username: $username, email: $email, password: $password }) {
-      errors {
-        field
-        message
-      }
-      user {
-        id
-        username
-        email
-      }
-    }
-  }
-`;
-
 const Register: React.FC<registerProps> = ({}) => {
-  const [registerUser, { data }] = useMutation(REGISTER_MUTATION);
+  const [registerUser, { data }] = useRegisterMutation();
   return (
     <Wrapper variant="small">
       <Formik
         initialValues={{ username: '', email: '', password: '' }}
-        onSubmit={(values) => {
+        onSubmit={async (values, { setErrors }) => {
           console.log('values: ', values);
-          return registerUser({ variables: { ...values } });
+          const response = await registerUser({ variables: { ...values } });
+
+          if (response.data?.register.errors) {
+            setErrors({ username: 'There is errror' });
+          }
         }}
       >
         {({ isSubmitting }) => (
