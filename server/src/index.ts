@@ -6,13 +6,13 @@ import { buildSchema } from 'type-graphql';
 import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
+import cors from 'cors';
 
 import { REDIS_CONN, SESSION_SECRET } from './constants';
 import { Post } from './entities/Post';
 import { User } from './entities/User';
 import { UserResolver } from './resolvers/user';
 import { PostResolver } from './resolvers/post';
-import { MyContext } from './types';
 
 const main = async () => {
   const conn = await createConnection({
@@ -30,6 +30,12 @@ const main = async () => {
 
   const app = express();
 
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    })
+  );
   app.use(
     session({
       name: 'sid',
@@ -54,7 +60,7 @@ const main = async () => {
     context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => console.log('server listening in port 4000'));
 };
