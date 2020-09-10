@@ -1,7 +1,8 @@
-import { Resolver, Query, Mutation, Arg, InputType, Field, ObjectType } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, InputType, Field, ObjectType, Ctx } from 'type-graphql';
 import argon2 from 'argon2';
 import { User } from '../entities/User';
 import { getConnection } from 'typeorm';
+import { MyContext } from '../types';
 
 @InputType()
 class UsernamePasswordInput {
@@ -35,8 +36,21 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req }: MyContext) {
+    if (!req.session.userId) {
+      return undefined;
+    }
+
+    const user = await User.findOne({ id: req.session.userId });
+    return user;
+  }
+
   @Mutation(() => UserResponse)
-  async register(@Arg('options') options: UsernamePasswordInput): Promise<UserResponse> {
+  async register(
+    @Arg('options') options: UsernamePasswordInput,
+    @Ctx() { req }: MyContext
+  ): Promise<UserResponse> {
     if (options.username.length <= 4) {
       return {
         errors: [{ field: 'username', message: 'Username must be longer than 4 characters' }],
@@ -69,13 +83,16 @@ export class UserResolver {
       }
     }
 
+    req.session.userId = user.id;
+
     return { user };
   }
 
   @Mutation(() => UserResponse)
   async login(
     @Arg('usernameOrEmail') usernameOrEmail: string,
-    @Arg('password') password: string
+    @Arg('password') password: string,
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const user = await User.findOne(
       usernameOrEmail.includes('@')
@@ -95,6 +112,8 @@ export class UserResolver {
         errors: [{ field: 'username/password', message: 'Username/password error' }],
       };
     }
+
+    req.session.userId = user.id;
 
     return { user };
   }
