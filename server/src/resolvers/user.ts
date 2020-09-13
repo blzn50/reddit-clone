@@ -3,6 +3,7 @@ import argon2 from 'argon2';
 import { User } from '../entities/User';
 import { getConnection } from 'typeorm';
 import { MyContext } from '../types';
+import { COOKIE_NAME } from '../constants';
 
 @InputType()
 class UsernamePasswordInput {
@@ -59,7 +60,7 @@ export class UserResolver {
 
     if (options.password.length <= 5) {
       return {
-        errors: [{ field: 'username', message: 'Password must be longer than 5 characters' }],
+        errors: [{ field: 'password', message: 'Password must be longer than 5 characters' }],
       };
     }
 
@@ -102,20 +103,36 @@ export class UserResolver {
 
     if (!user) {
       return {
-        errors: [{ field: 'username/password', message: 'Username/password error' }],
+        errors: [{ field: 'usernameOrEmail', message: "The account doesn't exists" }],
       };
     }
     const valid = await argon2.verify(user.password, password);
 
     if (!valid) {
       return {
-        errors: [{ field: 'username/password', message: 'Username/password error' }],
+        errors: [{ field: 'password', message: 'Incorrect password' }],
       };
     }
 
     req.session.userId = user.id;
 
     return { user };
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) =>
+      req.session.destroy((err) => {
+        if (err) {
+          console.log('err in logout', err);
+
+          resolve(false);
+          return;
+        }
+        res.clearCookie(COOKIE_NAME);
+        resolve(true);
+      })
+    );
   }
 
   // @Mutation(() => String)
