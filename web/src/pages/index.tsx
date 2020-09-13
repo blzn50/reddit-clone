@@ -1,5 +1,6 @@
 import { Link as ChakraLink, Text, Code, Icon, List, ListIcon, ListItem } from '@chakra-ui/core';
 import { NavBar } from '../components/NavBar';
+import { withApollo } from '../utils/withApollo';
 
 const Index = () => (
   <div>
@@ -8,4 +9,4 @@ const Index = () => (
   </div>
 );
 
-export default Index;
+export default withApollo({ ssr: true })(Index);
