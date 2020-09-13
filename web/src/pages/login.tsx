@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import { Box, Button } from '@chakra-ui/core';
 import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/FormField';
-import { useLoginMutation } from '../generated/graphql';
+import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
 
 interface loginProps {}
@@ -18,7 +18,18 @@ const Login: React.FC<loginProps> = ({}) => {
         initialValues={{ usernameOrEmail: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
           console.log('values: ', values);
-          const response = await loginUser({ variables: { ...values } });
+          const response = await loginUser({
+            variables: { ...values },
+            update: (cache, { data }) => {
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: 'Query',
+                  me: data?.login.user,
+                },
+              });
+            },
+          });
 
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
