@@ -1,21 +1,12 @@
-import { Resolver, Query, Mutation, Arg, InputType, Field, ObjectType, Ctx } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, Field, ObjectType, Ctx } from 'type-graphql';
 import argon2 from 'argon2';
 import { User } from '../entities/User';
 import { getConnection } from 'typeorm';
 import { MyContext } from '../types';
 import { COOKIE_NAME } from '../constants';
-
-@InputType()
-class UsernamePasswordInput {
-  @Field()
-  username: string;
-
-  @Field()
-  email: string;
-
-  @Field()
-  password: string;
-}
+// import { sendMail } from 'src/utils/sendEmail';
+import { validateRegister } from '../utils/validateRegister';
+import { UsernamePasswordInput } from '../utils/UsernamePasswordInput';
 
 @ObjectType()
 class FieldError {
@@ -37,14 +28,21 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  // @Mutation()
+  // async forgotPassword(@Arg('email') email: string, @Ctx() { req }: MyContext) {
+  //   const user = await User.findOne({ where: { email } });
+  //   if (!user) {
+  //     return;
+  //   }
+  //   sendMail(email);
+  // }
   @Query(() => User, { nullable: true })
-  async me(@Ctx() { req }: MyContext) {
+  me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {
       return undefined;
     }
 
-    const user = await User.findOne({ id: req.session.userId });
-    return user;
+    return User.findOne({ id: req.session.userId });
   }
 
   @Mutation(() => UserResponse)
@@ -52,16 +50,10 @@ export class UserResolver {
     @Arg('options') options: UsernamePasswordInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    if (options.username.length <= 4) {
-      return {
-        errors: [{ field: 'username', message: 'Username must be longer than 4 characters' }],
-      };
-    }
+    const errors = validateRegister(options);
 
-    if (options.password.length <= 5) {
-      return {
-        errors: [{ field: 'password', message: 'Password must be longer than 5 characters' }],
-      };
+    if (errors) {
+      return { errors };
     }
 
     const hashedPassword = await argon2.hash(options.password);
