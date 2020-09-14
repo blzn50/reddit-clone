@@ -20,7 +20,7 @@ const Register: React.FC<registerProps> = ({}) => {
         onSubmit={async (values, { setErrors }) => {
           console.log('values: ', values);
           const response = await registerUser({
-            variables: { ...values },
+            variables: { options: values },
             update: (cache, { data }) => {
               cache.writeQuery<MeQuery>({
                 query: MeDocument,
@@ -43,15 +43,15 @@ const Register: React.FC<registerProps> = ({}) => {
           <Form>
             <InputField name="username" label="Username" placeholder="username..." />
             <Box mt={4}>
+              <InputField type="email" name="email" label="Email" placeholder="email..." />
+            </Box>
+            <Box mt={4}>
               <InputField
                 type="password"
                 name="password"
                 label="Password"
                 placeholder="password..."
               />
-            </Box>
-            <Box mt={4}>
-              <InputField type="email" name="email" label="Email" placeholder="email..." />
             </Box>
             <Button mt={4} type="submit" variantColor="teal" isLoading={isSubmitting}>
               Register
