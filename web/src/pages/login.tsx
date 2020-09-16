@@ -1,7 +1,8 @@
 import React from 'react';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Formik, Form } from 'formik';
-import { Box, Button } from '@chakra-ui/core';
+import { Box, Button, Flex, Link } from '@chakra-ui/core';
 import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/FormField';
 import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
@@ -54,6 +55,14 @@ const Login: React.FC<loginProps> = ({}) => {
                 placeholder="password..."
               />
             </Box>
+
+            <Flex mt={2}>
+              <NextLink href="/forgot-password">
+                <Link style={{ color: 'gray' }} ml="auto">
+                  Forgot Password?
+                </Link>
+              </NextLink>
+            </Flex>
 
             <Button mt={4} type="submit" variantColor="teal" isLoading={isSubmitting}>
               Login

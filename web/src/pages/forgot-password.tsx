@@ -1,50 +1,55 @@
+import React, { useState } from 'react';
+import NextLink from 'next/link';
 import { Box, Link, Button } from '@chakra-ui/core';
 import { Formik, Form } from 'formik';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
 import { InputField } from '../components/FormField';
 import { Wrapper } from '../components/Wrapper';
-import { useChangePasswordMutation } from '../generated/graphql';
-import { toErrorMap } from '../utils/toErrorMap';
+import { useForgotPasswordMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 
 const ForgotPassword: React.FC<{}> = ({}) => {
-  const router = useRouter();
-  const [changePassword] = useChangePasswordMutation();
-
+  const [forgotPassword] = useForgotPasswordMutation();
+  const [complete, setComplete] = useState(false);
   return (
     <Wrapper variant="small">
       <Formik
-        initialValues={{ newPassword: '', confirmPassword: '' }}
-        onSubmit={async (values, { setErrors }) => {
+        initialValues={{ email: '' }}
+        onSubmit={async (values) => {
           console.log('values: ', values);
-          // const response = await changePassword({
-          //   variables: {
-          //     token,
-          //     newPassword: values.newPassword,
-          //     confirmPassword: values.confirmPassword,
-          //   },
-          // });
-          // if (response.data?.changePassword.errors) {
-          //   const errorMap = toErrorMap(response.data?.changePassword.errors);
-          //   if ('token' in errorMap) {
-          //     setTokenError(errorMap.token);
-          //   }
-          //   setErrors(errorMap);
-          // } else if (response.data?.changePassword.user) {
-          //   router.push('/');
-          // }
+          await forgotPassword({
+            variables: {
+              email: values.email,
+            },
+          });
+          setComplete(true);
         }}
       >
-        {({ isSubmitting }) => (
-          <Form>
-            <InputField type="email" name="email" label="Email" placeholder="Email" />
+        {({ isSubmitting }) =>
+          complete ? (
+            <>
+              <Box>If the account exists, you will get an email.</Box>
+              <NextLink href="/login">
+                <Link>Go to login page</Link>
+              </NextLink>
+            </>
+          ) : (
+            <>
+              <Form>
+                <Box as="h2" style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+                  Forgot password
+                </Box>
+                <Box as="em">
+                  Input your email address to receive a password reset link in your inbox.
+                </Box>
+                <InputField type="email" name="email" label="Email" placeholder="Your email..." />
 
-            <Button mt={4} type="submit" variantColor="teal" isLoading={isSubmitting}>
-              Get a new password
-            </Button>
-          </Form>
-        )}
+                <Button mt={4} type="submit" variantColor="teal" isLoading={isSubmitting}>
+                  Request a new password
+                </Button>
+              </Form>
+            </>
+          )
+        }
       </Formik>
     </Wrapper>
   );
