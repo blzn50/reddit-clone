@@ -1,3 +1,4 @@
+import { Post } from './Post';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -5,6 +6,7 @@ import {
   UpdateDateColumn,
   Column,
   BaseEntity,
+  OneToMany,
 } from 'typeorm';
 import { Field, ObjectType } from 'type-graphql';
 
@@ -33,4 +35,7 @@ export class User extends BaseEntity {
 
   @Column()
   password!: string;
+
+  @OneToMany(() => Post, (post) => post.creator)
+  posts: Post[];
 }

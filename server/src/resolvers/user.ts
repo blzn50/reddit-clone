@@ -122,7 +122,7 @@ export class UserResolver {
     } catch (error) {
       if (error.code === '23505') {
         return {
-          errors: [{ field: 'username', message: 'Username already exists' }],
+          errors: [{ field: 'username', message: 'Username already taken' }],
         };
       }
     }
