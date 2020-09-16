@@ -3,7 +3,7 @@ import express from 'express';
 import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
-import redis from 'redis';
+import Redis from 'ioredis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import cors from 'cors';
@@ -26,7 +26,7 @@ const main = async () => {
   });
 
   const redisStore = connectRedis(session);
-  const redisClient = redis.createClient({ url: REDIS_CONN });
+  const redis = new Redis(REDIS_CONN);
 
   const app = express();
 
@@ -39,7 +39,7 @@ const main = async () => {
   app.use(
     session({
       name: COOKIE_NAME,
-      store: new redisStore({ client: redisClient }),
+      store: new redisStore({ client: redis }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         httpOnly: true,
@@ -57,7 +57,7 @@ const main = async () => {
       resolvers: [UserResolver, PostResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
