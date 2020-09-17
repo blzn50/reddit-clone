@@ -1,12 +1,13 @@
 import NextLink from 'next/link';
 import { Link, Text, Stack, Heading, Box, Flex, Button } from '@chakra-ui/core';
 import { Layout } from '../components/Layout';
-import { usePostsQuery } from '../generated/graphql';
+import { PostsQuery, usePostsQuery } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 
 const Index = () => {
-  const { data, loading } = usePostsQuery({
-    variables: { limit: 10 },
+  const { data, loading, fetchMore, variables } = usePostsQuery({
+    variables: { limit: 35, cursor: null },
+    notifyOnNetworkStatusChange: true,
   });
 
   if (!loading && !data) {
@@ -26,7 +27,7 @@ const Index = () => {
         <div>Loading</div>
       ) : (
         <Stack spacing={8}>
-          {data!.posts.map((p) => (
+          {data!.posts.posts.map((p) => (
             <Box p={5} shadow="md" borderWidth="1px" key={p.id}>
               <Heading fontSize="xl">{p.title}</Heading>
               <Text mt={2}>{p.textSnippet + '...'}</Text>
@@ -34,13 +35,41 @@ const Index = () => {
           ))}
         </Stack>
       )}
-      {data && (
+      {data && data.posts.hasMore ? (
         <Flex>
-          <Button isLoading={loading} m="auto" my={6}>
+          <Button
+            onClick={() => {
+              fetchMore({
+                variables: {
+                  limit: variables?.limit,
+                  cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+                },
+                // updateQuery: (previousResult, { fetchMoreResult }): PostsQuery => {
+                //   if (!fetchMoreResult) {
+                //     return previousResult as PostsQuery;
+                //   }
+
+                //   return {
+                //     __typename: 'Query',
+                //     posts: {
+                //       __typename: 'PaginatedPosts',
+                //       hasMore: (fetchMoreResult as PostsQuery).posts.hasMore,
+                //       posts: (previousResult as PostsQuery).posts.posts.concat(
+                //         ...(fetchMoreResult as PostsQuery).posts.posts
+                //       ),
+                //     },
+                //   };
+                // },
+              });
+            }}
+            isLoading={loading}
+            m="auto"
+            my={6}
+          >
             Load more
           </Button>
         </Flex>
-      )}
+      ) : null}
     </Layout>
   );
 };
