@@ -7,10 +7,10 @@ import { Formik, Form } from 'formik';
 import { InputField } from '../../components/FormField';
 import { Wrapper } from '../../components/Wrapper';
 import { toErrorMap } from '../../utils/toErrorMap';
-import { useChangePasswordMutation } from '../../generated/graphql';
+import { MeDocument, MeQuery, useChangePasswordMutation } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
 
-const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
+const ChangePassword: NextPage = () => {
   const router = useRouter();
   const [changePassword] = useChangePasswordMutation();
   const [tokenError, setTokenError] = useState('');
@@ -23,9 +23,18 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
           console.log('values: ', values);
           const response = await changePassword({
             variables: {
-              token,
+              token: typeof router.query.token === 'string' ? router.query.token : '',
               newPassword: values.newPassword,
               confirmPassword: values.confirmPassword,
+            },
+            update: (cache, { data }) => {
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: 'Query',
+                  me: data?.changePassword.user,
+                },
+              });
             },
           });
           if (response.data?.changePassword.errors) {
@@ -74,12 +83,6 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
       </Formik>
     </Wrapper>
   );
-};
-
-ChangePassword.getInitialProps = ({ query }) => {
-  return {
-    token: query.token as string,
-  };
 };
 
 export default withApollo({ ssr: false })(ChangePassword);

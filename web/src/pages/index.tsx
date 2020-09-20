@@ -1,5 +1,5 @@
 import NextLink from 'next/link';
-import { Link, Text, Stack, Heading, Box, Flex, Button } from '@chakra-ui/core';
+import { Link, Text, Stack, Heading, Box, Flex, Button, IconButton } from '@chakra-ui/core';
 import { Layout } from '../components/Layout';
 import { PostsQuery, usePostsQuery } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
@@ -28,11 +28,13 @@ const Index = () => {
       ) : (
         <Stack spacing={8}>
           {data!.posts.posts.map((p) => (
-            <Box p={5} shadow="md" borderWidth="1px" key={p.id}>
-              <Heading fontSize="xl">{p.title}</Heading>
-              <Text>Posted by {p.creator.username}</Text>
-              <Text mt={2}>{p.textSnippet + '...'}</Text>
-            </Box>
+            <Flex p={5} shadow="md" borderWidth="1px" key={p.id}>
+              <Box>
+                <Heading fontSize="xl">{p.title}</Heading>
+                <Text>Posted by {p.creator.username}</Text>
+                <Text mt={2}>{p.textSnippet + '...'}</Text>
+              </Box>
+            </Flex>
           ))}
         </Stack>
       )}
