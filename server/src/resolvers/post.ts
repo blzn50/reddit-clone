@@ -42,6 +42,34 @@ export class PostResolver {
     return root.text.slice(0, 50);
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async vote(
+    @Arg('postId', () => Int) postId: number,
+    @Arg('point', () => Int) point: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const isUpdoot = point !== -1;
+    const realPoint = isUpdoot ? 1 : -1;
+    const { userId } = req.session;
+
+    // await Updoot.insert({ userId, postId, point: realPoint });
+    await getConnection().query(
+      `
+    START TRANSACTION;
+
+    insert into updoot ("userId", "postId", point) 
+    values (${userId}, ${postId}, ${realPoint});
+
+    update post set points = points + ${realPoint}
+    where id = ${postId};
+    
+    COMMIT;
+    `
+    );
+    return true;
+  }
+
   @Query(() => PaginatedPosts)
   async posts(
     @Arg('limit', () => Int!) limit: number,

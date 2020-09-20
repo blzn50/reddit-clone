@@ -1,19 +1,19 @@
-import 'reflect-metadata';
-import express from 'express';
-import { createConnection } from 'typeorm';
 import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
-import Redis from 'ioredis';
-import session from 'express-session';
 import connectRedis from 'connect-redis';
 import cors from 'cors';
+import express from 'express';
+import session from 'express-session';
+import Redis from 'ioredis';
 import path from 'path';
-
-import { REDIS_CONN, SESSION_SECRET, COOKIE_NAME } from './constants';
+import 'reflect-metadata';
+import { buildSchema } from 'type-graphql';
+import { createConnection } from 'typeorm';
+import { COOKIE_NAME, REDIS_CONN, SESSION_SECRET } from './constants';
 import { Post } from './entities/Post';
+import { Updoot } from './entities/Updoot';
 import { User } from './entities/User';
-import { UserResolver } from './resolvers/user';
 import { PostResolver } from './resolvers/post';
+import { UserResolver } from './resolvers/user';
 
 const main = async () => {
   const conn = await createConnection({
@@ -24,7 +24,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [User, Post],
+    entities: [User, Post, Updoot],
   });
 
   await conn.runMigrations();

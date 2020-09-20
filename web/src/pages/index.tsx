@@ -6,7 +6,7 @@ import { withApollo } from '../utils/withApollo';
 
 const Index = () => {
   const { data, loading, fetchMore, variables } = usePostsQuery({
-    variables: { limit: 35, cursor: null },
+    variables: { limit: 20, cursor: null },
     notifyOnNetworkStatusChange: true,
   });
 
@@ -30,6 +30,7 @@ const Index = () => {
           {data!.posts.posts.map((p) => (
             <Box p={5} shadow="md" borderWidth="1px" key={p.id}>
               <Heading fontSize="xl">{p.title}</Heading>
+              <Text>Posted by {p.creator.username}</Text>
               <Text mt={2}>{p.textSnippet + '...'}</Text>
             </Box>
           ))}
