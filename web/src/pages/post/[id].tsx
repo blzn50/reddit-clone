@@ -1,6 +1,6 @@
+import React from 'react';
 import { Box, Heading } from '@chakra-ui/core';
 import { useRouter } from 'next/router';
-import React from 'react';
 import { Layout } from '../../components/Layout';
 import { usePostQuery } from '../../generated/graphql';
 import { withApollo } from '../../utils/withApollo';
@@ -35,8 +35,8 @@ const Post: React.FC<PostProps> = ({}) => {
 
   return (
     <Layout>
-      <Heading>{data?.post?.title}</Heading>
-      <Box>{data?.post?.text}</Box>
+      <Heading>{data?.post.title}</Heading>
+      <Box>{data?.post.text}</Box>
     </Layout>
   );
 };
