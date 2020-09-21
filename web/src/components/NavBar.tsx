@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Flex, Link } from '@chakra-ui/core';
+import { Box, Button, Flex, Heading, Link } from '@chakra-ui/core';
 import NextLink from 'next/link';
 import { useApolloClient } from '@apollo/client';
 import { useLogoutMutation, useMeQuery } from '../generated/graphql';
@@ -29,8 +29,13 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     );
   } else {
     body = (
-      <Flex>
-        <Box mr={3}>{data.me.username}</Box>
+      <Flex align="center" color="#ffffdc">
+        <NextLink href="/create-post">
+          <Button variant="link" color="#ffffdc">
+            Create post
+          </Button>
+        </NextLink>
+        <Box mx={3}>{data.me.username}</Box>
         <Button
           onClick={async () => {
             await logoutUser();
@@ -38,6 +43,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
           }}
           isLoading={logoutLoading}
           variant="link"
+          color="#ffffdc"
         >
           Logout
         </Button>
@@ -46,9 +52,18 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   }
   return (
     <Flex position="sticky" top={0} bg="tomato" p={4} zIndex={1}>
-      <Box ml="auto" color="white">
-        {body}
-      </Box>
+      <Flex flex={1} m="auto" maxW={800} align="center">
+        <NextLink href="/">
+          <Link>
+            <Heading size="md" color="#ffffdc">
+              Mini Reddit
+            </Heading>
+          </Link>
+        </NextLink>
+        <Box ml="auto" color="white">
+          {body}
+        </Box>
+      </Flex>
     </Flex>
   );
 };

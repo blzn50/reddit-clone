@@ -17,12 +17,6 @@ const Index = () => {
 
   return (
     <Layout>
-      <Flex align="center">
-        <Heading>MiniReddit</Heading>
-        <NextLink href="/create-post">
-          <Link ml="auto">Create post</Link>
-        </NextLink>
-      </Flex>
       <br />
       {loading && !data ? (
         <div>Loading</div>
@@ -32,7 +26,11 @@ const Index = () => {
             <Flex p={5} shadow="md" borderWidth="1px" key={p.id}>
               <UpdootSection post={p} />
               <Box>
-                <Heading fontSize="xl">{p.title}</Heading>
+                <NextLink href="/post/[id]" as={`/post/${p.id}`}>
+                  <Link>
+                    <Heading fontSize="xl">{p.title}</Heading>
+                  </Link>
+                </NextLink>
                 <Text>Posted by {p.creator.username}</Text>
                 <Text mt={2}>{p.textSnippet + '...'}</Text>
               </Box>

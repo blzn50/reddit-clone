@@ -61,7 +61,7 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
         }}
         isLoading={loadingState === 'updoot-loading'}
         variantColor={post.voteStatus === 1 ? 'red' : undefined}
-        aria-label="Upvote post"
+        aria-label="Up vote post"
         icon="chevron-up"
       />
       <Box>{post.points}</Box>
@@ -79,7 +79,7 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
         }}
         isLoading={loadingState === 'downdoot-loading'}
         variantColor={post.voteStatus === -1 ? 'blue' : undefined}
-        aria-label="Downvote post"
+        aria-label="Down vote post"
         icon="chevron-down"
       />
     </Flex>
