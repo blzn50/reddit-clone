@@ -8,12 +8,15 @@ import { withApollo } from '../../../utils/withApollo';
 import { usePostQuery, useUpdatePostMutation } from '../../../generated/graphql';
 import { useGetPostFromUrl } from '../../../utils/useGetPostFromUrl';
 import { useGetIntId } from '../../../utils/useGetIntId';
+import { useIsAuth } from '../../../utils/useIsAuth';
+import { Wrapper } from '../../../components/Wrapper';
 
 const EditPost: React.FC = () => {
   const router = useRouter();
   const intId = useGetIntId();
   const { data, loading } = useGetPostFromUrl();
-  const [updatePost] = useUpdatePostMutation();
+  const [updatePost] = useUpdatePostMutation({ errorPolicy: 'all' });
+  useIsAuth();
 
   if (loading) {
     return (

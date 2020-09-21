@@ -19,7 +19,6 @@ const Login: React.FC<loginProps> = ({}) => {
       <Formik
         initialValues={{ usernameOrEmail: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
-          console.log('values: ', values);
           const response = await loginUser({
             variables: { ...values },
             update: (cache, { data }) => {

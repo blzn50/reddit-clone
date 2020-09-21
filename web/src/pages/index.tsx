@@ -7,13 +7,18 @@ import { UpdootSection } from '../components/UpdootSection';
 import { EditDeletePostButtons } from '../components/EditDeletePostButtons';
 
 const Index = () => {
-  const { data, loading, fetchMore, variables } = usePostsQuery({
+  const { data, loading, error, fetchMore, variables } = usePostsQuery({
     variables: { limit: 20, cursor: null },
     notifyOnNetworkStatusChange: true,
   });
 
   if (!loading && !data) {
-    return <Box>Oops! no posts to show.</Box>;
+    return (
+      <Box>
+        <Box>Oops! no posts to show.</Box>
+        <Box>{error?.message}</Box>
+      </Box>
+    );
   }
 
   return (
