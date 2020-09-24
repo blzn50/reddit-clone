@@ -30,7 +30,7 @@ const main = async () => {
   await conn.runMigrations();
 
   const redisStore = connectRedis(session);
-  const redis = new Redis(process.env.REDIS_URL);
+  const redis = new Redis(process.env.REDISCLOUD_URL);
 
   const app = express();
 
