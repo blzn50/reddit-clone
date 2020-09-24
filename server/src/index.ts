@@ -48,9 +48,9 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         httpOnly: true,
-        sameSite: 'lax', // csrf
+        sameSite: 'none', // csrf
         secure: __prod__,
-        domain: __prod__ ? '.mini-reddit.vercel.app' : undefined,
+        domain: __prod__ ? '.vercel.app' : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
