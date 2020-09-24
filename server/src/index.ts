@@ -34,7 +34,7 @@ const main = async () => {
 
   const app = express();
 
-  app.set('proxy', 1);
+  app.set('trust proxy', 1);
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
@@ -50,6 +50,7 @@ const main = async () => {
         httpOnly: true,
         sameSite: 'lax', // csrf
         secure: __prod__,
+        domain: __prod__ ? '.vercel.app' : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
