@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "watch": "tsc -w",
     "build": "tsc",
@@ -41,5 +41,8 @@
     "type-graphql": "^1.0.0",
     "typeorm": "^0.2.25",
     "uuid": "^8.3.0"
+  },
+  "engines": {
+    "node": "11.4"
   }
 }
