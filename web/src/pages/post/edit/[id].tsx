@@ -2,7 +2,6 @@ import { Box, Button } from '@chakra-ui/core';
 import { Formik, Form } from 'formik';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { NetworkStatus } from '@apollo/client';
 import { InputField } from '../../../components/FormField';
 import { Layout } from '../../../components/Layout';
 import { withApollo } from '../../../utils/withApollo';
