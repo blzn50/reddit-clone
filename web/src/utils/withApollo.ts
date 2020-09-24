@@ -8,7 +8,7 @@ const createClient = (ctx: NextPageContext) =>
     // uri: process.env.NEXT_PUBLIC_API_URL as string,
     uri: 'http://localhost:4000/graphql',
     headers: {
-      cookie: (typeof window === 'undefined' ? ctx.req?.headers.cookie : undefined) || '',
+      cookie: (typeof window === 'undefined' ? ctx?.req?.headers.cookie : undefined) || '',
     },
     cache: new InMemoryCache({
       typePolicies: {

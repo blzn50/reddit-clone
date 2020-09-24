@@ -1,22 +1,29 @@
 import { Box, Button } from '@chakra-ui/core';
 import { Formik, Form } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { NetworkStatus } from '@apollo/client';
 import { InputField } from '../../../components/FormField';
 import { Layout } from '../../../components/Layout';
 import { withApollo } from '../../../utils/withApollo';
-import { usePostQuery, useUpdatePostMutation } from '../../../generated/graphql';
+import { useMeQuery, useUpdatePostMutation } from '../../../generated/graphql';
 import { useGetPostFromUrl } from '../../../utils/useGetPostFromUrl';
 import { useGetIntId } from '../../../utils/useGetIntId';
 import { useIsAuth } from '../../../utils/useIsAuth';
-import { Wrapper } from '../../../components/Wrapper';
 
 const EditPost: React.FC = () => {
   const router = useRouter();
   const intId = useGetIntId();
   const { data, loading } = useGetPostFromUrl();
-  const [updatePost] = useUpdatePostMutation({ errorPolicy: 'all' });
+  const { data: meData } = useMeQuery();
+  const [updatePost] = useUpdatePostMutation();
   useIsAuth();
+
+  useEffect(() => {
+    if (meData?.me?.id !== data?.post?.creator.id) {
+      router.push('/');
+    }
+  });
 
   if (loading) {
     return (
@@ -26,7 +33,15 @@ const EditPost: React.FC = () => {
     );
   }
 
-  if (!data?.post) {
+  if (!data) {
+    return (
+      <Layout>
+        <Box>Loading...</Box>
+      </Layout>
+    );
+  }
+
+  if (!data.post) {
     return (
       <Layout>
         <Box>No post found.</Box>
@@ -37,7 +52,7 @@ const EditPost: React.FC = () => {
   return (
     <Layout>
       <Formik
-        initialValues={{ title: data.post.title, text: data.post.text }}
+        initialValues={{ title: data?.post.title, text: data?.post.text }}
         onSubmit={async (values) => {
           console.log('values: ', values);
           const { errors } = await updatePost({

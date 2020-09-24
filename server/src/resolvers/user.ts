@@ -11,7 +11,7 @@ import {
   Root,
 } from 'type-graphql';
 import { getConnection } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid4 } from 'uuid';
 import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from '../constants';
 import { User } from '../entities/User';
 import { MyContext } from '../types';
@@ -97,9 +97,12 @@ export class UserResolver {
 
       return true;
     }
-    const token = uuidv4();
+    const token = uuid4();
     await redis.set(FORGOT_PASSWORD_PREFIX + token, user.id, 'ex', 1000 * 60 * 60 * 2);
-    sendMail(email, `<a href="http://localhost:3000/change-password/${token}">Reset Password</a>`);
+    sendMail(
+      email,
+      `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">Reset Password</a>`
+    );
     return true;
   }
 
@@ -174,7 +177,7 @@ export class UserResolver {
     }
 
     req.session.userId = user.id;
-
+    console.log(req.session.userId);
     return { user };
   }
 
@@ -193,33 +196,4 @@ export class UserResolver {
       })
     );
   }
-
-  // @Mutation(() => String)
-  // async changePassword(@Arg('token') token: string, @Arg('newPassword') newPassword: string): Promise<> {
-  //   if(newPassword.length <=2){
-  //     return {
-  //       errors: [
-  //         {
-  //           field: 'newPassword',
-  //           message: 'Length must be greater than 2'
-  //         }
-  //       ]
-  //     }
-  //   }
-
-  //   const userId = parseInt(id)
-  //   const user = await User.findOne(userId);
-
-  //   if(!user){
-  //     return {
-  //       errors: [
-  //         {field: 'token', message: 'User no longer exists'}
-  //       ]
-  //     }
-  //   }
-
-  //   await User.update({id: userId}, {password: await })
-
-  //   return {user}
-  // }
 }

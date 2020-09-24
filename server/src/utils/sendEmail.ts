@@ -1,12 +1,11 @@
 import sgMail from '@sendgrid/mail';
-import { SENDGRID_KEY } from '../constants';
 
-sgMail.setApiKey(SENDGRID_KEY);
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 export async function sendMail(to: string, html: string) {
   const msg = {
     to: to,
-    from: 'blazeraze.naren@gmail.com',
+    from: 'no-reply@minireddit.com',
     subject: 'Reset password',
     html,
   };

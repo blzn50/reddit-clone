@@ -183,6 +183,7 @@ export class PostResolver {
         .execute();
       return updatedPost.raw[0];
     }
+    return;
   }
 
   @Mutation(() => Boolean)
