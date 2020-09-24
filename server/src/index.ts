@@ -50,7 +50,6 @@ const main = async () => {
         httpOnly: true,
         sameSite: 'lax', // csrf
         secure: __prod__,
-        domain: __prod__ ? '.vercel.app' : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
