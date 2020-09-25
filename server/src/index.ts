@@ -48,9 +48,9 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         httpOnly: true,
-        sameSite: 'none', // csrf
+        sameSite: 'lax', // csrf
         secure: __prod__,
-        domain: __prod__ ? 'herokuapp.com' : undefined,
+        domain: __prod__ ? '.herokuapp.com' : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
