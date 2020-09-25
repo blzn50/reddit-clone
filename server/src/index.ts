@@ -72,7 +72,13 @@ const main = async () => {
     }),
   });
 
-  apolloServer.applyMiddleware({ app, cors: false });
+  apolloServer.applyMiddleware({
+    app,
+    cors: {
+      origin: process.env.CORS_ORIGIN,
+      credentials: true,
+    },
+  });
 
   app.listen(parseInt(process.env.PORT), () =>
     console.log('server listening in port ' + process.env.PORT)

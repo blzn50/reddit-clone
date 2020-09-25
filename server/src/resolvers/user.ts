@@ -108,7 +108,6 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: MyContext) {
-    console.log(req.ips);
     if (!req.session.userId) {
       return undefined;
     }
