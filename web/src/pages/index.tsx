@@ -1,16 +1,48 @@
 import NextLink from 'next/link';
-import { Link, Text, Stack, Heading, Box, Flex, Button } from '@chakra-ui/core';
+import {
+  Link,
+  Text,
+  Stack,
+  Heading,
+  Box,
+  Flex,
+  Button,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from '@chakra-ui/core';
 import { Layout } from '../components/Layout';
 import { usePostsQuery } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import { UpdootSection } from '../components/UpdootSection';
 import { EditDeletePostButtons } from '../components/EditDeletePostButtons';
-
+import { NetworkStatus } from '@apollo/client';
 const Index = () => {
-  const { data, loading, error, fetchMore, variables } = usePostsQuery({
+  const { data, loading, error, fetchMore, variables, networkStatus } = usePostsQuery({
     variables: { limit: 20, cursor: null },
     notifyOnNetworkStatusChange: true,
   });
+
+  if (!loading && networkStatus === NetworkStatus.error) {
+    return (
+      <Box height="100vh" bg="#FEEBC8">
+        <Alert
+          status="warning"
+          height="80vh"
+          flexDirection="column"
+          justifyContent="center"
+          textAlign="center"
+        >
+          <AlertIcon size="40px" />
+          <AlertTitle mt={4} mb={1} fontSize="lg">
+            The server is warming up.
+          </AlertTitle>
+          <AlertDescription>Please refresh the browser shortly.</AlertDescription>
+        </Alert>
+      </Box>
+    );
+  }
 
   if (!loading && !data) {
     return (
