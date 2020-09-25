@@ -10,6 +10,7 @@ const createClient = (ctx: NextPageContext) =>
     headers: {
       cookie: (typeof window === 'undefined' ? ctx?.req?.headers.cookie : undefined) || '',
     },
+    ssrMode: typeof window === 'undefined',
     cache: new InMemoryCache({
       typePolicies: {
         Query: {

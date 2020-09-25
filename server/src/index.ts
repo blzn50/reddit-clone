@@ -48,7 +48,7 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         httpOnly: true,
-        sameSite: 'lax', // csrf
+        sameSite: 'none', // csrf
         secure: __prod__,
         domain: __prod__ ? 'mini-reddit-clone.herokuapp.com' : undefined,
       },
@@ -74,10 +74,7 @@ const main = async () => {
 
   apolloServer.applyMiddleware({
     app,
-    cors: {
-      origin: process.env.CORS_ORIGIN,
-      credentials: true,
-    },
+    cors: false,
   });
 
   app.listen(parseInt(process.env.PORT), () =>
