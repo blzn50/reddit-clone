@@ -6,6 +6,5 @@ declare namespace NodeJS {
     SENDGRID_KEY: string;
     PORT: string;
     CORS_ORIGIN: string;
-    CORS_ORIGIN2: string;
   }
 }
