@@ -78,7 +78,7 @@ const initApolloClient = (apolloClient, initialState, ctx) => {
  * @returns {(PageComponent: ReactNode) => ReactNode}
  */
 export const createWithApollo = (ac) => {
-  return ({ ssr = false } = {}) => (PageComponent) => {
+  return ({ ssr = true } = {}) => (PageComponent) => {
     const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
       let client;
       if (apolloClient) {
@@ -102,7 +102,7 @@ export const createWithApollo = (ac) => {
       WithApollo.displayName = `withApollo(${displayName})`;
     }
 
-    if (ssr || PageComponent.getInitialProps) {
+    if (typeof window === 'undefined' || PageComponent.getInitialProps) {
       WithApollo.getInitialProps = async (ctx) => {
         const inAppContext = Boolean(ctx.ctx);
         const { apolloClient } = initOnContext(ac, ctx);
