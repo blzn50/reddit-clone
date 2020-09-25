@@ -50,7 +50,7 @@ const main = async () => {
         httpOnly: true,
         sameSite: 'none', // csrf
         secure: __prod__,
-        domain: __prod__ ? 'vercel.app' : undefined,
+        domain: __prod__ ? 'herokuapp.com' : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
