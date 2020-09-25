@@ -6,8 +6,9 @@ import { NextPageContext } from 'next';
 const createClient = (ctx: NextPageContext) =>
   new ApolloClient({
     uri: process.env.NEXT_PUBLIC_API_URL as string,
+    credentials: 'include',
     headers: {
-      cookie: (typeof window === 'undefined' ? ctx.req?.headers.cookie : undefined) || '',
+      cookie: (typeof window === 'undefined' ? ctx?.req?.headers.cookie : undefined) || '',
     },
     cache: new InMemoryCache({
       typePolicies: {
@@ -29,7 +30,6 @@ const createClient = (ctx: NextPageContext) =>
         },
       },
     }),
-    credentials: 'include',
   });
 
 export const withApollo = createWithApollo(createClient);
