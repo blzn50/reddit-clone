@@ -37,7 +37,7 @@ const main = async () => {
   app.set('trust proxy', 1);
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN,
+      origin: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN2],
       credentials: true,
     })
   );
@@ -50,7 +50,7 @@ const main = async () => {
         httpOnly: true,
         sameSite: 'lax', // csrf
         secure: __prod__,
-        domain: __prod__ ? '.herokuapp.com' : undefined,
+        domain: __prod__ ? 'mini-reddit-clone.herokuapp.com' : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
