@@ -54,7 +54,7 @@ export const initOnContext = (ac, ctx) => {
  * @param  {NormalizedCacheObject} initialState
  * @param  {NextPageContext} ctx
  */
-const initApolloClient = (apolloClient, initialState, ctx) => {
+const initApolloClient = (apolloClient, initialState = {}, ctx = {}) => {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (typeof window === 'undefined') {
@@ -78,7 +78,7 @@ const initApolloClient = (apolloClient, initialState, ctx) => {
  * @returns {(PageComponent: ReactNode) => ReactNode}
  */
 export const createWithApollo = (ac) => {
-  return ({ ssr = true } = {}) => (PageComponent) => {
+  return ({ ssr = false } = {}) => (PageComponent) => {
     const WithApollo = ({ apolloClient, apolloState, ...pageProps }) => {
       let client;
       if (apolloClient) {
@@ -102,7 +102,7 @@ export const createWithApollo = (ac) => {
       WithApollo.displayName = `withApollo(${displayName})`;
     }
 
-    if (typeof window === 'undefined' || PageComponent.getInitialProps) {
+    if (ssr || PageComponent.getInitialProps) {
       WithApollo.getInitialProps = async (ctx) => {
         const inAppContext = Boolean(ctx.ctx);
         const { apolloClient } = initOnContext(ac, ctx);
