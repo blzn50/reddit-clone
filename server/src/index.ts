@@ -35,6 +35,7 @@ const main = async () => {
   const app = express();
 
   app.set('trust proxy', 1);
+  app.use(express.json());
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
@@ -50,7 +51,7 @@ const main = async () => {
         httpOnly: true,
         sameSite: 'none', // csrf
         secure: __prod__,
-        domain: __prod__ ? '.mini-reddit-clone.herokuapp.com' : undefined,
+        domain: __prod__ ? 'mini-reddit-clone.herokuapp.com' : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
